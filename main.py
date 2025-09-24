@@ -11,19 +11,19 @@ quotes = []
 all_authors = []
 
 #check if the server response is OK
-if url.status_code == 200:
-    txt = soup.select('span.text')
-    author = soup.select('small.author')
-else:
-    error = 'Something wrong!'
+def check_server():
+    if url.status_code == 200:
+        txt = soup.select('span.text')
+        author = soup.select('small.author')
+        for span in txt:
+            quotes.append(span.get_text())
+        for a in author:
+            all_authors.append(a.get_text())
+    else:
+        print('Something wrong!')
 
-#add all quotes 
-for span in txt:
-    quotes.append(span.get_text())
-
-#add all authors 
-for a in author:
-    all_authors.append(a.get_text())
+#call the function
+check_server()
 
 #create a dict, quote by author
 result = {}
@@ -33,12 +33,15 @@ if len(quotes) == len(all_authors):
     for i in range(len(all_authors)):
         key = all_authors[i]
         v = quotes[i]
-        result[key] = v
-
+        if key not in result:
+            result[key] = []
+        result[key].append(v)
 
 #work with file
-with open('quotes.csv', 'w', encoding='utf-8') as file:
-    for k, v in result.items():
-        line = ""+ v + "" + '-' + "" + k + ""+ '\n'
-        file.write(line)
+def write_in_file():
+    with open('quotes.csv', 'w', encoding='utf-8') as file:
+        for k, v_list in result.items():
+            for v in v_list:
+                line = f'"{v}" - {k}\n'
+                file.write(line)
 
