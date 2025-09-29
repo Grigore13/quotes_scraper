@@ -3,8 +3,8 @@
 *.pyc
 
 # Virtual enviroments
-venv/
-.env/
+venv
+.env
 
 # Output files
 quotes.csv
